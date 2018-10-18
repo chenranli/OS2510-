@@ -1,33 +1,47 @@
 package mutualExclusion;
 
 import java.net.*;
+import java.util.concurrent.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.io.*;
 
+
+
 public class Server {
 	//every server will only send connection to each server whose server ID is smaller.
 	private int serverID;   
 	private ServerSocket serverSocket;
-	private LogicClock clock;
-	private String localFile = "";
-	//operation list
-	private ArrayList<Operation> oprList= new ArrayList<>();
+	private LogicClock clock = new LogicClock();
+	private String localFile = "0:0";
+	//there is a primary server that will write to original file, all other servers will only write to their local copies
+	private boolean primary; 	
+	private int numOfServer;
+	//synchronized operation list
+	private List<Operation> oprList= Collections.synchronizedList(new ArrayList<>()); 
+	//synchronized client list  
+	private List<ArrayList<Object>> clientList = new ArrayList<>();
+	//synchronized server list 
+	private List<ArrayList<Object>> serverList = new ArrayList<>();
+	private final ExecutorService communicationProcessingPool = Executors.newFixedThreadPool(10);
+	private final Semaphore clockLock = new Semaphore(1);
+	private int[] allowCounter;
+	private final Semaphore allowCounterLock = new Semaphore(1);
 	
-	//there is a primary server that will write to original file
-	private boolean primary;  
-	private ArrayList<ArrayList<Object>> clientList = new ArrayList<>();
-	private ArrayList<ArrayList<Object>> serverList = new ArrayList<>();
-	private final ExecutorService communicationProcessingPool = Executors.newFixedThreadPool(5);
-	
-	public Server(int serverID, ServerSocket serverSocket, boolean primary) {
+	public Server(int serverID, ServerSocket serverSocket, boolean primary, int numOfServer) {
 		this.serverID = serverID;
 		this.serverSocket = serverSocket;
 		this.primary = primary;
-		
+		this.numOfServer = numOfServer;
+		this.allowCounter = new int[numOfServer];
+		init(this.allowCounter);
 	}
 	
 	public static void main(String[] args) {
@@ -43,12 +57,12 @@ public class Server {
 			
 			//test if this server is primary or not
 			boolean primary = Server.isPrimary();
-
-			//create a server
-			Server server = new Server(serverID, serverSocket, primary);
 			
 			//read total number of servers
 			int numOfServer = Server.getNumOfServer();
+			
+			//create a server
+			Server server = new Server(serverID, serverSocket, primary, numOfServer);
 			
 			//number of incoming connections this server will receive
 			int numOfInCon = numOfServer - server.serverID - 1;
@@ -60,6 +74,7 @@ public class Server {
 				System.out.println("server " + server.serverID + " is waiting for server " + otherServerID + " to connet:");
 				Socket conFromOtherServer = serverSocket.accept();
 				ArrayList<Object> otherServer = new ArrayList<>();
+				server.serverList.add(otherServer);
 				//save information from currently incoming server
 				otherServer.add(otherServerID);
 				String otherIPAddress = conFromOtherServer.getRemoteSocketAddress().toString().split(":")[0].split("/")[1];
@@ -85,6 +100,7 @@ public class Server {
 				String[] otherServerInfo = stdIn.readLine().split(" ");
 				ArrayList<Object> otherServer = new ArrayList<>();
 				Socket conToOtherServer = new Socket(otherServerInfo[0], Integer.parseInt(otherServerInfo[1]));
+				server.serverList.add(otherServer);
 				otherServer.add(otherServerID);
 				// may need more info
 				otherServer.add(otherServerInfo[0]);
@@ -92,67 +108,329 @@ public class Server {
 				//add outputstream and inputstream to serverlist
 				otherServer.add(new BufferedReader(new InputStreamReader(conToOtherServer.getInputStream())));
 				otherServer.add(new PrintWriter(conToOtherServer.getOutputStream(), true));
+				System.out.println("length of server list : " + server.serverList.size());
 				System.out.println("New socket IP address is : " + conToOtherServer.getLocalAddress().toString());
 				System.out.println("New socket port number is : " + conToOtherServer.getLocalPort());
-				System.out.println("send connection to server " + otherServerID);
+				System.out.println("have sent connection to server " + otherServerID);
 				System.out.println();
 				System.out.println();
 			}
-			
-			System.out.println("We have bind every server with each other!");
+			System.out.println();
+			System.out.println("We have bind server " + server.serverID + " with all other server!");
+			System.out.println();
+			//listening to other servers
+			for (ArrayList<Object> s : server.serverList) {
+				server.communicationProcessingPool.submit(server.new ServerHandler((BufferedReader)s.get(3), (PrintWriter)s.get(4)));
+				System.out.println("Server " + server.serverID + " is listening to server " + s.get(0));
+				System.out.println();
+			}
 			
 			while (true) {
-				server.addClientSocket();
-				
-				//add client task to thread pool, client task is to read from that client
-				server.communicationProcessingPool.submit(server.new ClientTask());
-				//perform WRITE/READ operation
-				if (server.allowedToEnter()) {
-					if (server.oprList.get(0).getOprType() == "WRITE") {
-						server.localFile += server.oprList.get(0).getUpdate();
-						if (primary) {
-							//primary server will write update to original file
-							server.writeToLocal();
-						}
-						//WRITE operation is called by current server
-						if (server.oprList.get(0).getID() == server.serverID) {
-							server.release();
-						}
-					}else {//READ
-						server.oprList.get(0).getOutputStream().println(server.localFile);
-						server.release();
-					}
+				if (server.addClientSocket()) {
+					ArrayList<Object> newClient = server.clientList.get(server.clientList.size() - 1);	
+					//add new client task to thread pool, client task is to read from that client
+					server.communicationProcessingPool.submit(server.new ClientHandler(server.serverID, newClient));
 				}
 				
-				
-				
-				
-				
-				
-				
+				//perform WRITE/READ operation
+				if (server.allowedToEnter()) {
+					/*
+					 * "WRITE" when there is a "WRITE" at the head of operation list that is called
+					 * by current server and that "WRITE" has not been done before.
+					 */
+					if (server.oprList.get(0).getOprType().equals("WRITE")) {
+						if (server.oprList.get(0).checkStat() == false) {
+							String[] localFileInfo = server.localFile.split(":");
+							int newNum = Integer.parseInt(server.oprList.get(0).getUpdate());
+							String globalTime = (Integer.parseInt(localFileInfo[0]) + 1) + "";
+							String sum = (Integer.parseInt(localFileInfo[1]) + newNum) + "";
+							server.localFile = globalTime + ":" + sum;
+							server.oprList.get(0).changeStat();
+							if (primary) {
+								// primary server will write update to original file
+								server.updateOriginalFile();
+							}
+							// WRITE operation is called by current server
+							if (server.oprList.get(0).getID() == server.serverID) {
+								System.out.println("server " + server.oprList.get(0).getID()
+										+ " is WRITING! Press Enter to continue:");
+								String inputLine;
+								if ((inputLine = stdIn.readLine()) != null) {
+									System.out.println("Continue working...");
+								}
+								server.oprList.get(0).outputToClient().println(server.localFile);
+								server.oprList.remove(0);
+								server.release();
+								synchronized (server.oprList) {
+									for (Operation operation : server.oprList) {
+										System.out.println("operation ID : " + operation.getID()
+												+ "     operation type : " + operation.getOprType()
+												+ "     operation time : " + operation.getTime());
+									}
+								}
+								System.out.println();
+							}
+						}
+					}else {
+						//READ
+						synchronized(server.oprList) {
+							Iterator<Operation> iterator = server.oprList.iterator();
+							Operation operation; 
+							while (iterator.hasNext()) {
+								operation = iterator.next();
+								/*
+								 * There is no available "READ" operation before a "WRITE" operation. Available
+								 * means that "READ" is called by current server.
+								 */														
+								if (operation.getOprType().equals("WRITE")) {
+									break;
+								}
+								//Find a "READ" operation called by current server. Perform this "READ".
+								if (operation.getOprType().equals("READ") && operation.getID() == server.serverID
+										&& operation.isDone == false) {
+									operation.outputToClient().println(server.localFile);
+									server.release();
+									operation.changeStat();
+									iterator.remove();
+									break;
+								}
+							}
+							
+						}
+					}
+					server.sortOprList();
+				}
 			}
-			
-			 
-			
 		}catch (IOException e) {
 			return;
 		}
-
 	}
 	
-
-	private class ClientTask implements Runnable{
-	
+	/*
+	 * Read message from other servers
+	 */
+	private class ServerHandler implements Runnable {
+		private final BufferedReader in;
+		private final PrintWriter out;
+		
+		private ServerHandler(BufferedReader in, PrintWriter out) {
+			this.in = in;
+			this.out = out;
+		}
+		
 		@Override 
 		public void run() {
-			//read request from client.
-			//1. broadcast this request to all other servers
+			try {
+				String message;
+				while ((message = in.readLine()) != null) {
+					String[] messageInfo = message.split("~");
+					int messageServerID = Integer.parseInt(messageInfo[0]);
+					String messageOprType = messageInfo[1];
+					String messageUpdate = messageInfo[2];
+					int messageTime =  Integer.parseInt(messageInfo[3]);
+					System.out.println("receive a message from server " + messageServerID + " : message type : "
+							+ messageOprType + "     message update : " + messageUpdate + "     message time : "
+							+ messageTime);
+					clock.setTime(Math.max(clock.getTime(), messageTime));
+					clock.tick();
+					if (messageOprType.equals("WRITE") || messageOprType.equals("READ")) {
+						//add "WRITE" or "READ" request to operation list.
+						oprList.add(new Operation(messageServerID, messageOprType, messageUpdate, messageTime, null));
+						clock.tick();
+						out.println(serverID + "~" + "ALLOW" + "~NOTHING~" + clock.getTime());
+						System.out.println("send ALLOW message to server " + serverID);
+						System.out.println();
+					}else if (messageOprType.equals("ALLOW")) {
+						oprList.add(new Operation(messageServerID, messageOprType, messageUpdate, messageTime, null));
+					}else {
+						//messageOprType == "RELEASE"
+						synchronized(oprList) {
+							Iterator<Operation> iterator = oprList.iterator();
+							Operation operation;
+							while (iterator.hasNext()) {
+								operation = iterator.next();
+								// delete first "WRITE" or "READ" operation send by that server
+								if (operation.getID() == messageServerID
+										&& (operation.getOprType().equals("WRITE") || operation.getOprType().equals("READ"))) {
+									iterator.remove();
+									break;
+								}
+							}
+						}
+					}
+					System.out.println();
+					System.out.println("Current operation list : ");
+					sortOprList();
+					synchronized(oprList) {
+						for (Operation operation : oprList) {
+							System.out.println("operation ID : " + operation.getID() + "     operation type : "
+									+ operation.getOprType() + "     operation time : " + operation.getTime());
+						}
+					}
+					System.out.println();
+				}
+			}catch (IOException e) {
+				
+			}
+		}
+	}
+		
+	/*
+	 * Read request from client, add new operation to operation list, and send
+	 * request to each server.
+	 */
+	private class ClientHandler implements Runnable{
+		private final int serverID;
+		private final ArrayList<Object> newClient;
+		
+		private ClientHandler(int serverID, ArrayList<Object> newClient) {
+			this.serverID = serverID;
+			this.newClient = newClient;
+		}
+
+		@Override 
+		public void run() {
+			try {
+				BufferedReader in = (BufferedReader)this.newClient.get(0);
+				String request;
+				System.out.println("We have found a new client!!!!!!");
+				while ((request = in.readLine()) != null) {
+					String[] oprInfo = request.split("~");
+					String oprType = oprInfo[0];
+					String update = oprInfo[1];
+					System.out.println(request);
+					tick();
+					int timeStamp = clock.getTime();
+					PrintWriter out = (PrintWriter) this.newClient.get(1);
+					oprList.add(new Operation(this.serverID, oprType, update, timeStamp, out));
+					System.out.println("We have add a new operation to operation list : " + this.serverID + " " + oprType);
+					System.out.println();
+					System.out.println("Current operation list : ");
+					sortOprList();
+					synchronized(oprList) {
+						for (Operation operation : oprList) {
+							System.out.println("operation ID : " + operation.getID() + "     operation type : "
+									+ operation.getOprType() + "     operation time : " + operation.getTime());
+						}
+					}
+					System.out.println();
+					Iterator<ArrayList<Object>> iterator = serverList.iterator();
+					ArrayList<Object> server;
+					while (iterator.hasNext()) {
+						server = iterator.next();
+						PrintWriter receiver = (PrintWriter) server.get(4);
+						receiver.println(serverID + "~" + oprType + "~" + update + "~" + timeStamp);
+						System.out.println("send a message to server " + server.get(0) + " : " + serverID + "~"
+								+ oprType + "~" + update + "~" + timeStamp);
+						System.out.println();
+					}
+				}
+			}catch (IOException e) {
 			
-			
+			}
 		}
 	}
 	
-	private void addClientSocket() {
+	/*
+	 * After operation is done, first remove exact one "ALLOW" message sent from
+	 * each other server. If it has not received "ALLOW" message from some server,
+	 * then wait for that "ALLOW" message. Finally send release message to each
+	 * other server.
+	 * 
+	 */
+	private void release() {
+		try {
+			this.allowCounterLock.acquire();
+			int removeAllow = this.numOfServer - 1;
+			while (removeAllow >= 0) {
+				this.allowCounter[removeAllow] += 1;
+				removeAllow -= 1;
+			}
+			this.allowCounter[this.serverID] = 0;
+		}catch (InterruptedException e) {
+			
+		}finally {
+			this.allowCounterLock.release();
+		}
+
+		this.tick();
+		PrintWriter receiver;
+		for (ArrayList<Object> server : serverList) {
+			receiver = (PrintWriter) server.get(4);
+			System.out.println("send RELEASE message to server : " + server.get(0));
+			System.out.println();
+			receiver.println(this.serverID + "~RELEASE~NOINFO~" + this.getTime());
+		}
+		
+		
+	}
+
+	//sort operation list based on the time stamp of operation
+	private void sortOprList() {
+		this.oprList.sort(new Comparator<Operation>() {
+			@Override
+			public int compare(Operation opr1, Operation opr2) {
+				return opr1.getTime() - opr2.getTime();
+			}
+		});
+		//remove ancient "ALLOW"
+		try {
+			this.allowCounterLock.acquire();
+			synchronized (this.oprList) {
+				Operation operation;
+				Iterator<Operation> iterator = this.oprList.iterator();
+				while (iterator.hasNext()) {
+					operation = iterator.next();
+					int operationID = operation.getID();
+					if (operationID != this.serverID && operation.getOprType().equals("ALLOW")
+							&& this.allowCounter[operationID] > 0) {
+						this.allowCounter[operationID] -= 1;
+						iterator.remove();
+					}
+				}
+			}
+		}catch (InterruptedException e) {
+			
+		}finally {
+			this.allowCounterLock.release();
+		}
+	}
+	
+	private int getTime() {
+		try {
+			this.clockLock.acquire();
+			return this.clock.getTime();
+		}catch (InterruptedException e) {
+			
+		}finally {
+			this.clockLock.release();
+		}
+		return 0;
+	}
+	
+	private void tick() {
+		try {
+			this.clockLock.acquire();
+			this.clock.tick();
+		}catch (InterruptedException e) {
+			
+		}finally {
+			this.clockLock.release();
+		}
+	}
+	
+	private void setTime(int time) {
+		try {
+			this.clockLock.acquire();
+			this.clock.setTime(time);
+		}catch (InterruptedException e) {
+			
+		}finally {
+			this.clockLock.release();
+		}
+	}
+	
+	private boolean addClientSocket() {
 		try {
 			//timeout for waiting for a new client to connect
 			serverSocket.setSoTimeout(40);
@@ -160,65 +438,101 @@ public class Server {
 			ArrayList<Object> newClient = new ArrayList<>();
 			this.clientList.add(newClient);
 			newClient.add(new BufferedReader(new InputStreamReader(newClientSocket.getInputStream())));
-			newClient.add(new PrintWriter(newClientSocket.getOutputStream(), true)) ;
+			newClient.add(new PrintWriter(newClientSocket.getOutputStream(), true));
+			return true;
 		}catch (IOException e) {
-			
+			return false;
 		}
 	}
 	
-	private void writeToLocal() {
+	private void updateOriginalFile() {
 		//
-	}
-	
-	private void release() {
-		//
-	}
-	
+	}		
+
+	/*
+	 * In two cases, allows to enter: (1)calling server's "READ" operation is before
+	 * the first "WRITE" operation, and current server has received at lease a
+	 * message from all other servers; (2)a WRITE operation is at the head of the
+	 * queue, and current server has received at least a message from all other
+	 * servers, then all server write the operation to its local copy.
+	 */
 	private boolean allowedToEnter() {
 		//see who has sent a message
-		Set commServer =new HashSet();
-		for (Operation operation : this.oprList) {
-			commServer.add(operation.getID());
+		Set<Integer> commServer =new HashSet<>();
+		synchronized (this.oprList) {
+			for (Operation operation : this.oprList) {
+				commServer.add(operation.getID());
+			}
 		}
-		/*
-		 * In two cases, allow to enter: (1)calling server's READ operation is at the
-		 * head of the queue, and all other servers have sent a message; (2)a WRITE
-		 * operation is at the head of the queue, then all server write the operation to
-		 * its local copy.
-		 */
-		int numOfServer = this.serverList.size();
-		if ((commServer.size() == numOfServer && this.oprList.get(0).getID() == this.serverID)
-				|| (commServer.size() != 0 && this.oprList.get(0).getOprType() == "WRITE")) {
-			return true;
+		//Check if current server has received some message from all other servers. 
+		if (commServer.size() == this.numOfServer) {
+			if (this.oprList.get(0).getOprType().equals("WRITE")) {
+				return true;
+			}
+			synchronized (this.oprList) {
+				for (Operation operation : this.oprList) {
+					if (operation.getOprType().equals("READ") && operation.getID() == this.serverID) {
+						return true;
+					}
+					if (operation.getOprType().equals("WRITE")) {
+						return false;
+					}
+				}
+			}
 		}
 		return false;
 	}
 	
+	private void init(int[] array) {
+		int size = array.length;
+		for (int i = 0; i < size; i ++) {
+			array[i] = 0;
+		}
+	}
+	
 	private class Operation {
-		//serverID
-		//operationType
-		//content
-		//timeStamp
-		//outputstream
-		private final int serverID = 0;
-		private final String operationType = null;
-		private final String update = "";
-		private final PrintWriter out = null;
+		private final int serverID;
+		private final String oprType;
+		private final String update;
+		private final int timeStamp;
+		private final PrintWriter out;
+		//whether this operation has been performed
+		private boolean isDone = false;
+		
+		private Operation(int serverID, String oprType, String update, int timeStamp, PrintWriter out) {
+			this.serverID = serverID;
+			this.oprType = oprType;
+			this.update = update;
+			this.timeStamp = timeStamp;
+			this.out = out;
+		}
 		
 		private int getID() {
 			return this.serverID;
 		}
 		
 		private String getOprType() {
-			return this.operationType;
+			return this.oprType;
 		}
 		
 		private String getUpdate() {
 			return this.update;
 		}
 		
-		private PrintWriter getOutputStream() {
+		private PrintWriter outputToClient() {
 			return this.out;
+		}
+		
+		private void changeStat() {
+			this.isDone = true;
+		}
+		
+		private boolean checkStat() {
+			return this.isDone;
+		}
+		
+		private int getTime() {
+			return this.timeStamp;
 		}
 	}
 	
@@ -279,7 +593,7 @@ public class Server {
 		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 		String inputLine = "";
 		System.out.println();
-		System.out.println("How many other servers there are:");
+		System.out.println("How many servers there are:");
 		try {
 			while (Server.invalidNumOfServer((inputLine = stdIn.readLine()))) {
 				System.out.println("Invalid input, please try again.");
@@ -326,7 +640,7 @@ public class Server {
 		private int clock = 0;
 		
 		public int tick() {
-			return 1;
+			return clock += 1;
 		}
 		
 		public int getTime() {
