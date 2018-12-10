@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.concurrent.BlockingQueue;
 
 public class Helper implements Runnable{
 	private final int id;
 	private final String keywords;
-	Helper(int id, String keywords){
+	private BlockingQueue<HashMap> q;
+	Helper(int id, String keywords,BlockingQueue q){
 		this.id  = id;
 		this.keywords = keywords;
+		this.q = q;
 	}
 	@Override
 	public void run() {
@@ -20,7 +23,15 @@ public class Helper implements Runnable{
 			HashMap<String,HashMap<Integer,Integer>> hm = new HashMap<String,HashMap<Integer,Integer>>();
 			hm = (HashMap<String,HashMap<Integer,Integer>>) obj;
 			//System.out.println(hm);
-			Server.tmp.putAll(hm);
+			try {
+				if(!q.contains(hm)) {
+					q.put(hm);
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//Server.tmp.putAll(hm);
 			LinkedHashSet<Integer> hs = new LinkedHashSet<Integer>();
 			for(HashMap<Integer,Integer> value: hm.values()) {
 				for(Integer v: value.keySet()) {
