@@ -1,0 +1,1 @@
+justo C:\eclipse\1000.txt,390 C:\eclipse\1000.txt,390 C:\eclipse\1000.txt,388 C:\eclipse\1000.txt,388 C:\eclipse\500.txt,197 C:\eclipse\500.txt,190 C:\eclipse\200.txt,78 C:\eclipse\200.txt,76 C:\eclipse\100.txt,42 C:\eclipse\100.txt,36

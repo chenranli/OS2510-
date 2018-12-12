@@ -1,0 +1,3 @@
+quis C:\eclipse\1000.txt,952 C:\eclipse\1000.txt,952 C:\eclipse\1000.txt,942 C:\eclipse\1000.txt,942 C:\eclipse\500.txt,482 C:\eclipse\500.txt,467 C:\eclipse\200.txt,194 C:\eclipse\200.txt,190 C:\eclipse\100.txt,99 C:\eclipse\100.txt,95
+Quisque C:\eclipse\1000.txt,231 C:\eclipse\1000.txt,231 C:\eclipse\1000.txt,227 C:\eclipse\1000.txt,227 C:\eclipse\500.txt,118 C:\eclipse\500.txt,113 C:\eclipse\200.txt,50 C:\eclipse\200.txt,41 C:\eclipse\100.txt,21 C:\eclipse\100.txt,20
+quam C:\eclipse\1000.txt,524 C:\eclipse\1000.txt,524 C:\eclipse\1000.txt,518 C:\eclipse\1000.txt,518 C:\eclipse\500.txt,260 C:\eclipse\500.txt,257 C:\eclipse\200.txt,103 C:\eclipse\200.txt,100 C:\eclipse\100.txt,52 C:\eclipse\100.txt,51

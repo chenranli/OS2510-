@@ -1,0 +1,16 @@
+amet C:\eclipse\1000.txt,1045 C:\eclipse\1000.txt,1041 C:\eclipse\500.txt,522 C:\eclipse\500.txt,521 C:\eclipse\200.txt,209 C:\eclipse\200.txt,207 C:\eclipse\100.txt,105 C:\eclipse\100.txt,102
+adipiscing C:\eclipse\1000.txt,78 C:\eclipse\1000.txt,74 C:\eclipse\500.txt,40 C:\eclipse\500.txt,38 C:\eclipse\200.txt,17 C:\eclipse\200.txt,16 C:\eclipse\100.txt,9 C:\eclipse\100.txt,8
+accumsan C:\eclipse\1000.txt,398 C:\eclipse\1000.txt,393 C:\eclipse\500.txt,197 C:\eclipse\500.txt,196 C:\eclipse\200.txt,78 C:\eclipse\200.txt,75 C:\eclipse\100.txt,38 C:\eclipse\100.txt,37
+arcu C:\eclipse\1000.txt,342 C:\eclipse\1000.txt,339 C:\eclipse\500.txt,171 C:\eclipse\500.txt,168 C:\eclipse\200.txt,69 C:\eclipse\200.txt,65 C:\eclipse\100.txt,35 C:\eclipse\100.txt,34
+at C:\eclipse\1000.txt,958 C:\eclipse\1000.txt,955 C:\eclipse\500.txt,478 C:\eclipse\500.txt,477 C:\eclipse\200.txt,192 C:\eclipse\200.txt,189 C:\eclipse\100.txt,96 C:\eclipse\100.txt,96
+ac C:\eclipse\1000.txt,964 C:\eclipse\1000.txt,957 C:\eclipse\500.txt,479 C:\eclipse\500.txt,477 C:\eclipse\200.txt,190 C:\eclipse\200.txt,189 C:\eclipse\100.txt,97 C:\eclipse\100.txt,92
+aptent C:\eclipse\1000.txt,67 C:\eclipse\1000.txt,67 C:\eclipse\500.txt,34 C:\eclipse\500.txt,33 C:\eclipse\200.txt,14 C:\eclipse\200.txt,13 C:\eclipse\100.txt,8 C:\eclipse\100.txt,6
+ad C:\eclipse\1000.txt,67 C:\eclipse\1000.txt,67 C:\eclipse\500.txt,34 C:\eclipse\500.txt,33 C:\eclipse\200.txt,14 C:\eclipse\200.txt,13 C:\eclipse\100.txt,8 C:\eclipse\100.txt,6
+Aliquam C:\eclipse\1000.txt,342 C:\eclipse\1000.txt,339 C:\eclipse\500.txt,169 C:\eclipse\500.txt,169 C:\eclipse\200.txt,67 C:\eclipse\200.txt,67 C:\eclipse\100.txt,40 C:\eclipse\100.txt,27
+aliquet C:\eclipse\1000.txt,505 C:\eclipse\1000.txt,505 C:\eclipse\500.txt,253 C:\eclipse\500.txt,252 C:\eclipse\200.txt,103 C:\eclipse\200.txt,97 C:\eclipse\100.txt,56 C:\eclipse\100.txt,47
+auctor C:\eclipse\1000.txt,324 C:\eclipse\1000.txt,322 C:\eclipse\500.txt,162 C:\eclipse\500.txt,161 C:\eclipse\200.txt,69 C:\eclipse\200.txt,60 C:\eclipse\100.txt,35 C:\eclipse\100.txt,34
+ante C:\eclipse\1000.txt,537 C:\eclipse\1000.txt,537 C:\eclipse\500.txt,271 C:\eclipse\500.txt,266 C:\eclipse\200.txt,109 C:\eclipse\200.txt,104 C:\eclipse\100.txt,55 C:\eclipse\100.txt,49
+a C:\eclipse\1000.txt,941 C:\eclipse\1000.txt,935 C:\eclipse\500.txt,473 C:\eclipse\500.txt,466 C:\eclipse\200.txt,189 C:\eclipse\200.txt,188 C:\eclipse\100.txt,96 C:\eclipse\100.txt,93
+Aenean C:\eclipse\1000.txt,290 C:\eclipse\1000.txt,289 C:\eclipse\500.txt,145 C:\eclipse\500.txt,145 C:\eclipse\200.txt,60 C:\eclipse\200.txt,55 C:\eclipse\100.txt,29 C:\eclipse\100.txt,26
+augue C:\eclipse\1000.txt,532 C:\eclipse\1000.txt,529 C:\eclipse\500.txt,266 C:\eclipse\500.txt,261 C:\eclipse\200.txt,107 C:\eclipse\200.txt,104 C:\eclipse\100.txt,53 C:\eclipse\100.txt,51
+aliquam C:\eclipse\1000.txt,331 C:\eclipse\1000.txt,330 C:\eclipse\500.txt,165 C:\eclipse\500.txt,164 C:\eclipse\200.txt,66 C:\eclipse\200.txt,65 C:\eclipse\100.txt,33 C:\eclipse\100.txt,32

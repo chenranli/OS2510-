@@ -1,0 +1,2 @@
+blandit C:\eclipse\1000.txt,340 C:\eclipse\1000.txt,340 C:\eclipse\1000.txt,339 C:\eclipse\1000.txt,339 C:\eclipse\500.txt,170 C:\eclipse\500.txt,169 C:\eclipse\200.txt,67 C:\eclipse\200.txt,67 C:\eclipse\100.txt,37 C:\eclipse\100.txt,30
+bibendum C:\eclipse\1000.txt,283 C:\eclipse\1000.txt,283 C:\eclipse\1000.txt,278 C:\eclipse\1000.txt,278 C:\eclipse\500.txt,142 C:\eclipse\500.txt,140 C:\eclipse\200.txt,60 C:\eclipse\200.txt,53 C:\eclipse\100.txt,28 C:\eclipse\100.txt,25

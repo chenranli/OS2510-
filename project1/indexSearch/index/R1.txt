@@ -1,0 +1,4 @@
+risus C:\eclipse\1000.txt,523 C:\eclipse\1000.txt,523 C:\eclipse\1000.txt,520 C:\eclipse\1000.txt,520 C:\eclipse\500.txt,261 C:\eclipse\500.txt,260 C:\eclipse\200.txt,105 C:\eclipse\200.txt,104 C:\eclipse\100.txt,57 C:\eclipse\100.txt,48
+rutrum C:\eclipse\1000.txt,320 C:\eclipse\1000.txt,320 C:\eclipse\1000.txt,319 C:\eclipse\1000.txt,319 C:\eclipse\500.txt,161 C:\eclipse\500.txt,158 C:\eclipse\200.txt,62 C:\eclipse\200.txt,62 C:\eclipse\100.txt,34 C:\eclipse\100.txt,28
+rhoncus C:\eclipse\1000.txt,304 C:\eclipse\1000.txt,304 C:\eclipse\1000.txt,300 C:\eclipse\1000.txt,300 C:\eclipse\500.txt,151 C:\eclipse\500.txt,149 C:\eclipse\200.txt,65 C:\eclipse\200.txt,56 C:\eclipse\100.txt,34 C:\eclipse\100.txt,31
+ridiculus C:\eclipse\1000.txt,41 C:\eclipse\1000.txt,41 C:\eclipse\1000.txt,41 C:\eclipse\1000.txt,41 C:\eclipse\500.txt,21 C:\eclipse\500.txt,20 C:\eclipse\200.txt,9 C:\eclipse\200.txt,8 C:\eclipse\100.txt,4 C:\eclipse\100.txt,4

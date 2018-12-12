@@ -1,0 +1,5 @@
+himenaeos C:\eclipse\1000.txt,67 C:\eclipse\1000.txt,67 C:\eclipse\1000.txt,67 C:\eclipse\1000.txt,67 C:\eclipse\500.txt,34 C:\eclipse\500.txt,33 C:\eclipse\200.txt,14 C:\eclipse\200.txt,13 C:\eclipse\100.txt,8 C:\eclipse\100.txt,6
+hendrerit C:\eclipse\1000.txt,348 C:\eclipse\1000.txt,348 C:\eclipse\1000.txt,346 C:\eclipse\1000.txt,346 C:\eclipse\500.txt,174 C:\eclipse\500.txt,173 C:\eclipse\200.txt,70 C:\eclipse\200.txt,68 C:\eclipse\100.txt,34 C:\eclipse\100.txt,34
+hac C:\eclipse\1000.txt,33 C:\eclipse\1000.txt,33 C:\eclipse\1000.txt,32 C:\eclipse\1000.txt,32 C:\eclipse\500.txt,17 C:\eclipse\500.txt,16 C:\eclipse\200.txt,8 C:\eclipse\200.txt,5 C:\eclipse\100.txt,3 C:\eclipse\100.txt,2
+habitasse C:\eclipse\1000.txt,33 C:\eclipse\1000.txt,33 C:\eclipse\1000.txt,32 C:\eclipse\1000.txt,32 C:\eclipse\500.txt,17 C:\eclipse\500.txt,16 C:\eclipse\200.txt,8 C:\eclipse\200.txt,5 C:\eclipse\100.txt,3 C:\eclipse\100.txt,2
+habitant C:\eclipse\1000.txt,92 C:\eclipse\1000.txt,92 C:\eclipse\1000.txt,91 C:\eclipse\1000.txt,91 C:\eclipse\500.txt,46 C:\eclipse\500.txt,46 C:\eclipse\200.txt,19 C:\eclipse\200.txt,18 C:\eclipse\100.txt,9 C:\eclipse\100.txt,9

@@ -1,0 +1,10 @@
+ipsum C:\eclipse\1000.txt,623 C:\eclipse\1000.txt,608 C:\eclipse\500.txt,315 C:\eclipse\500.txt,307 C:\eclipse\200.txt,129 C:\eclipse\200.txt,124 C:\eclipse\100.txt,64 C:\eclipse\100.txt,60
+In C:\eclipse\1000.txt,377 C:\eclipse\1000.txt,369 C:\eclipse\500.txt,193 C:\eclipse\500.txt,184 C:\eclipse\200.txt,80 C:\eclipse\200.txt,74 C:\eclipse\100.txt,39 C:\eclipse\100.txt,35
+id C:\eclipse\1000.txt,798 C:\eclipse\1000.txt,795 C:\eclipse\500.txt,403 C:\eclipse\500.txt,395 C:\eclipse\200.txt,161 C:\eclipse\200.txt,158 C:\eclipse\100.txt,84 C:\eclipse\100.txt,77
+Integer C:\eclipse\1000.txt,302 C:\eclipse\1000.txt,299 C:\eclipse\500.txt,152 C:\eclipse\500.txt,146 C:\eclipse\200.txt,64 C:\eclipse\200.txt,55 C:\eclipse\100.txt,33 C:\eclipse\100.txt,31
+inceptos C:\eclipse\1000.txt,67 C:\eclipse\1000.txt,67 C:\eclipse\500.txt,34 C:\eclipse\500.txt,33 C:\eclipse\200.txt,14 C:\eclipse\200.txt,13 C:\eclipse\100.txt,8 C:\eclipse\100.txt,6
+imperdiet C:\eclipse\1000.txt,358 C:\eclipse\1000.txt,358 C:\eclipse\500.txt,179 C:\eclipse\500.txt,177 C:\eclipse\200.txt,73 C:\eclipse\200.txt,71 C:\eclipse\100.txt,37 C:\eclipse\100.txt,36
+in C:\eclipse\1000.txt,991 C:\eclipse\1000.txt,990 C:\eclipse\500.txt,495 C:\eclipse\500.txt,493 C:\eclipse\200.txt,203 C:\eclipse\200.txt,194 C:\eclipse\100.txt,106 C:\eclipse\100.txt,97
+iaculis C:\eclipse\1000.txt,302 C:\eclipse\1000.txt,300 C:\eclipse\500.txt,153 C:\eclipse\500.txt,147 C:\eclipse\200.txt,64 C:\eclipse\200.txt,56 C:\eclipse\100.txt,35 C:\eclipse\100.txt,29
+interdum C:\eclipse\1000.txt,333 C:\eclipse\1000.txt,330 C:\eclipse\500.txt,166 C:\eclipse\500.txt,164 C:\eclipse\200.txt,66 C:\eclipse\200.txt,64 C:\eclipse\100.txt,35 C:\eclipse\100.txt,31
+Interdum C:\eclipse\1000.txt,58 C:\eclipse\1000.txt,58 C:\eclipse\500.txt,30 C:\eclipse\500.txt,28 C:\eclipse\200.txt,12 C:\eclipse\200.txt,11 C:\eclipse\100.txt,6 C:\eclipse\100.txt,6

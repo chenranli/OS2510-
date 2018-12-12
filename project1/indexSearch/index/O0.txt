@@ -1,0 +1,3 @@
+orci C:\eclipse\1000.txt,514 C:\eclipse\1000.txt,513 C:\eclipse\500.txt,257 C:\eclipse\500.txt,256 C:\eclipse\200.txt,105 C:\eclipse\200.txt,99 C:\eclipse\100.txt,50 C:\eclipse\100.txt,49
+odio C:\eclipse\1000.txt,409 C:\eclipse\1000.txt,399 C:\eclipse\500.txt,200 C:\eclipse\500.txt,199 C:\eclipse\200.txt,81 C:\eclipse\200.txt,76 C:\eclipse\100.txt,39 C:\eclipse\100.txt,37
+ornare C:\eclipse\1000.txt,342 C:\eclipse\1000.txt,336 C:\eclipse\500.txt,169 C:\eclipse\500.txt,167 C:\eclipse\200.txt,66 C:\eclipse\200.txt,65 C:\eclipse\100.txt,33 C:\eclipse\100.txt,32
