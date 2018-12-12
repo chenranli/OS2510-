@@ -107,9 +107,10 @@ public class Search {
 				
 			//HashSet<Integer> hs = new HashSet<Integer>();
 			HashMap<Integer,Integer> hm = new HashMap<Integer,Integer>();
-			for(int i=1;i<length;i+=2) {
+			for(int i=1;i<length;i++) {
 				//hs.add(Integer.parseInt(s[i]));
-				hm.put(Integer.parseInt(s[i]), Integer.parseInt(s[i+1]));
+				String[] str = s[i].split(",");
+				hm.put(Integer.parseInt(str[0]), Integer.parseInt(str[1]));
 			}	
 			if(index.containsKey(s[0])) {
 				//HashSet<Integer> t = new HashSet<Integer>();
