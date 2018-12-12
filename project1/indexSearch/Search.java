@@ -18,18 +18,18 @@ import java.util.Scanner;
 
 public class Search {
 	
-	private static class ValueComparator implements Comparator<Map.Entry<Integer, Integer>>{
-		public int compare(Map.Entry<Integer, Integer> m, Map.Entry<Integer, Integer> n) {
+	private static class ValueComparator implements Comparator<Map.Entry<String, Integer>>{
+		public int compare(Map.Entry<String, Integer> m, Map.Entry<String, Integer> n) {
 			return n.getValue()-m.getValue();
 		}
 	}
 	//Map<Integer,String> sources;
 	//HashMap<String, HashSet<Integer>> index;
-	HashMap<String,HashMap<Integer,Integer>> index;
+	HashMap<String,HashMap<String,Integer>> index;
 	Search(){
 		//sources = new HashMap<Integer,String>();
         //index = new HashMap<String, HashSet<Integer>>();
-		index = new HashMap<String,HashMap<Integer,Integer>>();
+		index = new HashMap<String,HashMap<String,Integer>>();
     }
 	public Object search(String keywords, int id, List<String> list) throws NumberFormatException, IOException {
 		String[] keys = keywords.split(" ");// keyword respectively
@@ -79,7 +79,7 @@ public class Search {
 		if(l == 0) {
 			return "not found";
 		}
-		HashMap<String,HashMap<Integer,Integer>> res = new HashMap<String,HashMap<Integer,Integer>>();
+		HashMap<String,HashMap<String,Integer>> res = new HashMap<String,HashMap<String,Integer>>();
 		for(String key: keys) {
 			if(index.get(key) != null) {
 				res.put(key,index.get(key));
@@ -106,28 +106,29 @@ public class Search {
 			//if(line > (id-1)*10 && line < id*10) {
 				
 			//HashSet<Integer> hs = new HashSet<Integer>();
-			HashMap<Integer,Integer> hm = new HashMap<Integer,Integer>();
+			HashMap<String,Integer> hm = new HashMap<String,Integer>();
 			for(int i=1;i<length;i++) {
 				//hs.add(Integer.parseInt(s[i]));
 				String[] str = s[i].split(",");
-				hm.put(Integer.parseInt(str[0]), Integer.parseInt(str[1]));
+				System.out.println(s[i]);
+				hm.put(str[0], Integer.parseInt(str[1]));
 			}	
 			if(index.containsKey(s[0])) {
 				//HashSet<Integer> t = new HashSet<Integer>();
-				HashMap<Integer,Integer> t = new HashMap<Integer,Integer>();
+				HashMap<String,Integer> t = new HashMap<String,Integer>();
 				t = index.get(s[0]); 
-				for(Map.Entry<Integer, Integer> entry: t.entrySet()) {
+				for(Map.Entry<String, Integer> entry: t.entrySet()) {
 					hm.put(entry.getKey(), entry.getValue());
 				}
 				//hm.addAll(t);
 			}
-			List<Map.Entry<Integer,Integer>> list = new ArrayList<>();
+			List<Map.Entry<String,Integer>> list = new ArrayList<>();
 			list.addAll(hm.entrySet());
 			Search.ValueComparator vc = new ValueComparator();
 			Collections.sort(list, vc);
 			//hm = (HashMap)list;
-			LinkedHashMap<Integer,Integer> t = new LinkedHashMap<Integer,Integer>();
-			for(Entry<Integer, Integer> l:list) {
+			LinkedHashMap<String,Integer> t = new LinkedHashMap<String,Integer>();
+			for(Entry<String, Integer> l:list) {
 				t.put(l.getKey(), l.getValue());
 			}
 			index.put(s[0], t);
@@ -145,7 +146,11 @@ public class Search {
 //		String ss = in.nextLine();
 //		//System.out.println(s.search(ss,1));
 //		try {
-//			System.out.println(s.search(ss, 1));
+//			List<String> l = new ArrayList();
+//			l.add("index.txt");
+//			l.add("index2.txt");
+//			l.add("index3.txt");
+//			System.out.println(s.search(ss, 1,l));
 //		} catch (NumberFormatException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
