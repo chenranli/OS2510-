@@ -4,22 +4,25 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class Helper implements Runnable{
 	private final int id;
 	private final String keywords;
 	private BlockingQueue<HashMap> q;
-	Helper(int id, String keywords,BlockingQueue q){
+	private List<String> fileList;
+	Helper(int id, String keywords,BlockingQueue q,List list){
 		this.id  = id;
 		this.keywords = keywords;
 		this.q = q;
+		this.fileList = list;
 	}
 	@Override
 	public void run() {
 		Search s = new Search();
 		try {
-			Object obj = s.search(keywords, id);
+			Object obj = s.search(keywords, id, fileList);
 			HashMap<String,HashMap<Integer,Integer>> hm = new HashMap<String,HashMap<Integer,Integer>>();
 			hm = (HashMap<String,HashMap<Integer,Integer>>) obj;
 			//System.out.println(hm);

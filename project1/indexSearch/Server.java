@@ -33,6 +33,7 @@ public class Server{
 	public static LinkedHashSet<Integer> ans = new LinkedHashSet<Integer>();
 	//public static LinkedHashMap<String,HashMap<Integer,Integer>> tmp = new LinkedHashMap<String,HashMap<Integer,Integer>>();
 	private static List<Map.Entry<Integer,Integer>> list = new ArrayList<>();
+	private List<String> fileList = new ArrayList();
 	Server(int pn){
 		this.portNum = pn;
 	}
@@ -60,18 +61,15 @@ public class Server{
 								//HashSet<Integer> t = new HashSet<Integer>();
 								BlockingQueue queue = new LinkedBlockingQueue();
 								ExecutorService threadPool = Executors.newFixedThreadPool(10);
-								threadPool.submit(new Helper(1,inputLine,queue));
-								threadPool.submit(new Helper(2,inputLine,queue));
-								threadPool.submit(new Helper(3,inputLine,queue));
-								threadPool.submit(new Helper(4,inputLine,queue));
-								threadPool.submit(new Helper(5,inputLine,queue));
-								threadPool.submit(new Helper(6,inputLine,queue));
-								threadPool.submit(new Helper(7,inputLine,queue));
-								threadPool.submit(new Helper(8,inputLine,queue));
-								threadPool.submit(new Helper(9,inputLine,queue));
-								threadPool.submit(new Helper(10,inputLine,queue));
-
-								
+								threadPool.submit(new Helper(1,inputLine,queue,fileList));
+								threadPool.submit(new Helper(2,inputLine,queue,fileList));
+								threadPool.submit(new Helper(3,inputLine,queue,fileList));
+								threadPool.submit(new Helper(4,inputLine,queue,fileList));
+								threadPool.submit(new Helper(5,inputLine,queue,fileList));
+								threadPool.submit(new Helper(6,inputLine,queue,fileList));
+								threadPool.submit(new Helper(7,inputLine,queue,fileList));
+								threadPool.submit(new Helper(8,inputLine,queue,fileList));
+								threadPool.submit(new Helper(9,inputLine,queue,fileList));	
 								try {
 									threadPool.awaitTermination(1, TimeUnit.SECONDS);
 								} catch (InterruptedException e) {

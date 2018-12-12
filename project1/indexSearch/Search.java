@@ -31,15 +31,13 @@ public class Search {
         //index = new HashMap<String, HashSet<Integer>>();
 		index = new HashMap<String,HashMap<Integer,Integer>>();
     }
-	public Object search(String keywords, int id) throws NumberFormatException, IOException {
+	public Object search(String keywords, int id, List<String> list) throws NumberFormatException, IOException {
 		String[] keys = keywords.split(" ");// keyword respectively
-		String[] fileList = new String[2];
+		List<String> List = list;
+		String[] fileList = new String[3];
 		//read corresponding file according to the helper id
-		if(id<=5) {
-			fileList[0] = "index.txt";
-		}else {
-			fileList[0] = "index2.txt";
-			fileList[1] = "index3.txt";
+		for(int i=0;i<3;i++) {
+			fileList[i] = List.get(i+3*(id-1));
 		}
 		for(String file: fileList) {
 			if(file != null) {
